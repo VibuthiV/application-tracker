@@ -26,7 +26,6 @@ const Navbar = () => {
   const toggleNotifications = () => {
     setIsNotifOpen((prev) => !prev);
     if (!isNotifOpen) {
-      // when opening dropdown, mark as read
       markAllRead();
     }
   };
@@ -51,16 +50,6 @@ const Navbar = () => {
               >
                 Home
               </Link>
-
-              <Link
-                to="/roadmap"
-                className={`nav-link ${
-                  location.pathname === "/roadmap" ? "nav-link-active" : ""
-                }`}
-              >
-                Roadmap
-              </Link>
-
               <Link
                 to="/login"
                 className={`nav-link ${

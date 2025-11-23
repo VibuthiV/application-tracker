@@ -47,6 +47,15 @@ function App() {
           }
         />
 
+        <Route
+          path="/roadmap"
+          element={
+            <ProtectedRoute>
+              <RoadmapPage />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

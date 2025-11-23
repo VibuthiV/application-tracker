@@ -1,213 +1,264 @@
+import { useEffect } from "react";
 import "../styles/roadmap.css";
 
 const RoadmapPage = () => {
+  useEffect(() => {
+    const stages = document.querySelectorAll(".roadmap-stage");
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    stages.forEach((s) => observer.observe(s));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <main className="roadmap-page">
       <header className="roadmap-header">
-        <h1>Your Interview Roadmap</h1>
+        <h1>Your Job Journey Roadmap</h1>
         <p>
-          A simple, practical path to go from <strong>student / fresher</strong> to
-          <strong> job offer</strong>. Use this roadmap along with your JobTrackr
-          applications and reminders.
+          Follow this step–by–step road from{" "}
+          <strong>student / fresher</strong> to{" "}
+          <strong>job offer and first 3 months</strong>. Use this roadmap
+          along with your JobTrackr applications and reminders.
         </p>
       </header>
 
-      {/* Overview timeline */}
-      <section className="roadmap-overview">
-        <h2>Big picture</h2>
-        <div className="roadmap-steps">
-          <div className="roadmap-step">
-            <span className="step-index">1</span>
-            <h3>Foundation</h3>
-            <p>Resume, LinkedIn, skills, and basic portfolio setup.</p>
-          </div>
-          <div className="roadmap-step">
-            <span className="step-index">2</span>
-            <h3>Applications</h3>
-            <p>Targeted job search, tracking opportunities, and consistent apply routine.</p>
-          </div>
-          <div className="roadmap-step">
-            <span className="step-index">3</span>
-            <h3>Online Assessments</h3>
-            <p>Coding tests, aptitude, and company-specific rounds.</p>
-          </div>
-          <div className="roadmap-step">
-            <span className="step-index">4</span>
-            <h3>Interviews</h3>
-            <p>Technical + HR interviews, communication, and follow-ups.</p>
-          </div>
-          <div className="roadmap-step">
-            <span className="step-index">5</span>
-            <h3>Offer & Joining</h3>
-            <p>Evaluating offers, negotiation basics, and onboarding preparation.</p>
-          </div>
-        </div>
+      <section className="roadmap-legend">
+        <span className="legend-dot legend-foundation" /> Foundation
+        <span className="legend-separator">•</span>
+        <span className="legend-dot legend-progress" /> In progress
+        <span className="legend-separator">•</span>
+        <span className="legend-dot legend-offer" /> Offer & beyond
       </section>
 
-      {/* Phase 1 */}
-      <section className="roadmap-section">
-        <h2>1. Foundation – Get ready before you apply</h2>
-        <div className="roadmap-grid">
-          <div className="roadmap-card">
-            <h3>Resume essentials</h3>
+      <section className="roadmap-timeline">
+        {/* The road itself */}
+        <div className="road-path" />
+
+        {/* Stage 1 */}
+        <article className="roadmap-stage stage-left">
+          <div className="stage-dot stage-dot--foundation">1</div>
+          <div className="stage-card">
+            <h2>Foundation: Resume, LinkedIn & Skills</h2>
+            <p className="stage-intro">
+              Before you start applying everywhere, make sure your basics are
+              strong and clear.
+            </p>
             <ul>
-              <li>Keep it <strong>one page</strong> for fresher / student profiles.</li>
-              <li>Highlight projects, internships, hackathons, and online courses.</li>
-              <li>Use clear bullet points with action verbs (Built, Implemented, Designed).</li>
-              <li>Remove unnecessary details (photo, too many personal details).</li>
+              <li>
+                <strong>Resume:</strong> keep it one page, highlight projects,
+                internships, and measurable outcomes.
+              </li>
+              <li>
+                <strong>LinkedIn:</strong> add a clear headline (role + skills),
+                short About, and your top projects.
+              </li>
+              <li>
+                <strong>GitHub / Portfolio:</strong> pin 2–3 strong projects
+                with a clean README and screenshots.
+              </li>
+              <li>
+                <strong>Core skills:</strong> at least one language (C/Java/
+                Python/JS) + basic DSA (arrays, strings, recursion).
+              </li>
             </ul>
+            <p className="stage-tip">
+              Tip: store links to your resume, LinkedIn and GitHub in JobTrackr
+              notes so they are easy to copy during applications.
+            </p>
           </div>
-          <div className="roadmap-card">
-            <h3>LinkedIn & GitHub</h3>
+        </article>
+
+        {/* Stage 2 */}
+        <article className="roadmap-stage stage-right">
+          <div className="stage-dot stage-dot--foundation">2</div>
+          <div className="stage-card">
+            <h2>Discovering & Shortlisting Opportunities</h2>
+            <p className="stage-intro">
+              Instead of random mass applying, build a small but focused list
+              of companies and roles.
+            </p>
             <ul>
-              <li>Set a clear headline: <em>“Final-year CSE student | Interested in Web / AI”</em>.</li>
-              <li>Write a short About section: who you are, what you are learning, what you want.</li>
-              <li>Pin 2–3 strongest projects on GitHub with proper README.</li>
+              <li>
+                Look at <strong>campus drives</strong>, pooled drives and
+                off–campus roles (LinkedIn, careers pages, job boards).
+              </li>
+              <li>
+                Identify roles that really match your skills: Frontend,
+                Full–stack, QA, Data, etc.
+              </li>
+              <li>
+                For each role you like, create a new application in JobTrackr
+                with company, position, link and notes.
+              </li>
+              <li>
+                Set an initial status like <strong>“Planned”</strong> or{" "}
+                <strong>“To Apply”</strong> before you actually submit.
+              </li>
             </ul>
+            <p className="stage-tip">
+              Tip: you can tag applications with labels like
+              &quot;product&quot;, &quot;service&quot;, &quot;dream company&quot;,
+              &quot;backup&quot; using the tags field.
+            </p>
           </div>
-          <div className="roadmap-card">
-            <h3>Skill checklist</h3>
+        </article>
+
+        {/* Stage 3 */}
+        <article className="roadmap-stage stage-left">
+          <div className="stage-dot stage-dot--progress">3</div>
+          <div className="stage-card">
+            <h2>Application Routine & Consistency</h2>
+            <p className="stage-intro">
+              Treat your job search like a mini project with a weekly plan.
+            </p>
             <ul>
-              <li>Comfortable with at least one programming language (C / Java / Python / JS).</li>
-              <li>Basic DSA: arrays, strings, recursion, sorting, searching.</li>
-              <li>Basics of DBMS, OS, CN for core CS interviews.</li>
+              <li>
+                Set a realistic weekly target (e.g.{" "}
+                <strong>7–10 quality applications</strong>).
+              </li>
+              <li>
+                After applying, update status to <strong>“Applied”</strong> and
+                set a <strong>next follow–up date</strong>.
+              </li>
+              <li>
+                Use the <strong>Applications</strong> page to filter by status
+                and see where you are stuck.
+              </li>
+              <li>
+                Use the board view to visually see how many are in “Applied /
+                Online Test / Interview / Offer”.
+              </li>
             </ul>
+            <p className="stage-tip">
+              Tip: your notification bell will remind you of follow–ups so you
+              never forget to check on an application.
+            </p>
           </div>
-        </div>
+        </article>
+
+        {/* Stage 4 */}
+        <article className="roadmap-stage stage-right">
+          <div className="stage-dot stage-dot--progress">4</div>
+          <div className="stage-card">
+            <h2>Online Tests & Technical Screening</h2>
+            <p className="stage-intro">
+              Most companies have at least one screening round – coding, MCQs
+              or aptitude.
+            </p>
+            <ul>
+              <li>
+                Practice on platforms (LeetCode / HackerRank / CodeStudio) focusing on easy to medium problems.
+              </li>
+              <li>
+                Track upcoming tests by updating status to{" "}
+                <strong>“Online Test”</strong> and adding the test date in{" "}
+                <strong>next follow–up</strong>.
+              </li>
+              <li>
+                Use the timeline in each application to record how the test
+                went and topics asked.
+              </li>
+              <li>
+                Revise common CS subjects: OOPS, DBMS, OS, CN for core company
+                tests.
+              </li>
+            </ul>
+            <p className="stage-tip">
+              Tip: after every test, write 3 things you did well and 3 things
+              to improve in the application notes.
+            </p>
+          </div>
+        </article>
+
+        {/* Stage 5 */}
+        <article className="roadmap-stage stage-left">
+          <div className="stage-dot stage-dot--progress">5</div>
+          <div className="stage-card">
+            <h2>Interviews: Technical + HR</h2>
+            <p className="stage-intro">
+              This is where your communication and understanding are tested,
+              not just memory.
+            </p>
+            <ul>
+              <li>
+                For every scheduled interview, update status to{" "}
+                <strong>“Interview”</strong> and log the date/time.
+              </li>
+              <li>
+                Be ready to deeply explain your projects – tech stack, problems
+                solved, and your role.
+              </li>
+              <li>
+                Prepare answers for common HR questions: &quot;Tell me about
+                yourself&quot;, strengths, weaknesses, failures.
+              </li>
+              <li>
+                After each round, add a timeline entry with questions asked and
+                feedback so you learn faster.
+              </li>
+            </ul>
+            <p className="stage-tip">
+              Tip: review your last interview notes on JobTrackr before your
+              next one – patterns will start to appear.
+            </p>
+          </div>
+        </article>
+
+        {/* Stage 6 */}
+        <article className="roadmap-stage stage-right">
+          <div className="stage-dot stage-dot--offer">6</div>
+          <div className="stage-card">
+            <h2>Offer, Decision & First 3 Months</h2>
+            <p className="stage-intro">
+              Once offers start coming, it’s about making a thoughtful choice
+              and planning your early career.
+            </p>
+            <ul>
+              <li>
+                Update status to <strong>“Offer”</strong> and record CTC, role,
+                location and joining date in notes.
+              </li>
+              <li>
+                Compare offers based on learning, tech stack, team culture and
+                stability – not only salary.
+              </li>
+              <li>
+                If you accept, close other applications by marking them as{" "}
+                <strong>“Rejected”</strong> or <strong>“On Hold”</strong> for
+                clarity.
+              </li>
+              <li>
+                Set a small roadmap for your first 3 months: what you want to
+                learn, build and contribute.
+              </li>
+            </ul>
+            <p className="stage-tip">
+              Tip: even after you get an offer, keep a summary of your journey
+              in JobTrackr – it becomes a reference for your next switch.
+            </p>
+          </div>
+        </article>
       </section>
 
-      {/* Phase 2 */}
-      <section className="roadmap-section">
-        <h2>2. Applications – Build a healthy pipeline</h2>
-        <div className="roadmap-grid">
-          <div className="roadmap-card">
-            <h3>Weekly routine</h3>
-            <ul>
-              <li>Set a target: e.g. <strong>7–10 quality applications per week</strong>.</li>
-              <li>Use JobTrackr to log every application with status + next follow-up date.</li>
-              <li>Prefer roles that match your skills instead of random mass applications.</li>
-            </ul>
-          </div>
-          <div className="roadmap-card">
-            <h3>Types of opportunities</h3>
-            <ul>
-              <li>Campus placements & pooled drives.</li>
-              <li>Off-campus: LinkedIn, company career pages, referrals, job boards.</li>
-              <li>Internships and trainee roles – great entry points for freshers.</li>
-            </ul>
-          </div>
-          <div className="roadmap-card">
-            <h3>Follow-up strategy</h3>
-            <ul>
-              <li>After applying, set a follow-up date in JobTrackr (e.g. 5–7 days).</li>
-              <li>Send a polite reminder email or LinkedIn message after the follow-up date.</li>
-              <li>Use the notification bell to never miss these follow-ups.</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Phase 3 */}
-      <section className="roadmap-section">
-        <h2>3. Online tests – Coding & aptitude rounds</h2>
-        <div className="roadmap-grid">
-          <div className="roadmap-card">
-            <h3>Coding platforms</h3>
-            <ul>
-              <li>Practice on LeetCode / HackerRank / CodeStudio (easy to medium level).</li>
-              <li>Focus on patterns: arrays, strings, hashing, two pointers, basic DP.</li>
-              <li>Time-box: even 3–4 focused problems per day is enough if consistent.</li>
-            </ul>
-          </div>
-          <div className="roadmap-card">
-            <h3>Aptitude & reasoning</h3>
-            <ul>
-              <li>Work through topics: percentages, ratios, time & work, number systems.</li>
-              <li>Practice from previous placement papers if available.</li>
-              <li>Note your weak areas and revisit them weekly.</li>
-            </ul>
-          </div>
-          <div className="roadmap-card">
-            <h3>Tracking tests with JobTrackr</h3>
-            <ul>
-              <li>Use status like <strong>“Online Test”</strong> or <strong>“In Progress”</strong> for such rounds.</li>
-              <li>Store test dates + links in the application notes.</li>
-              <li>Set follow-up dates for result updates after the test.</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Phase 4 */}
-      <section className="roadmap-section">
-        <h2>4. Interviews – Technical + HR</h2>
-        <div className="roadmap-grid">
-          <div className="roadmap-card">
-            <h3>Technical interview prep</h3>
-            <ul>
-              <li>Be ready to explain your projects: tech stack, challenges, your contribution.</li>
-              <li>Revise OOPS, DBMS, OS, CN basics with simple explanations.</li>
-              <li>Practice “whiteboard” style: explain how you think before coding.</li>
-            </ul>
-          </div>
-          <div className="roadmap-card">
-            <h3>HR & communication</h3>
-            <ul>
-              <li>Prepare answers for: “Tell me about yourself”, strengths, weaknesses, failures.</li>
-              <li>Keep answers honest, simple, and structured (past → present → future).</li>
-              <li>Maintain eye contact, stay calm, and don’t rush answers.</li>
-            </ul>
-          </div>
-          <div className="roadmap-card">
-            <h3>Using JobTrackr during interviews</h3>
-            <ul>
-              <li>Add each interview as an activity in the timeline for that application.</li>
-              <li>Note: questions asked, areas you struggled, feedback received.</li>
-              <li>Before your next interview, quickly review these notes.</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Phase 5 */}
-      <section className="roadmap-section">
-        <h2>5. Offer, decision & joining</h2>
-        <div className="roadmap-grid">
-          <div className="roadmap-card">
-            <h3>When an offer comes</h3>
-            <ul>
-              <li>Update status to <strong>“Offer”</strong> in JobTrackr.</li>
-              <li>Record CTC, role, location, and joining date in notes.</li>
-              <li>Compare offers based on growth, learning, and stability, not just salary.</li>
-            </ul>
-          </div>
-          <div className="roadmap-card">
-            <h3>Basic negotiation</h3>
-            <ul>
-              <li>As a fresher, negotiation room is limited, but you can ask politely.</li>
-              <li>Mention other offers only if they are confirmed and relevant.</li>
-              <li>Be respectful – you are building a long-term relationship.</li>
-            </ul>
-          </div>
-          <div className="roadmap-card">
-            <h3>Before joining</h3>
-            <ul>
-              <li>Revise key skills required for the role.</li>
-              <li>Complete pending documentation early.</li>
-              <li>Set new goals: what you want to learn in the first 3–6 months.</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="roadmap-footer">
-        <h2>Use this roadmap + JobTrackr together</h2>
+      <footer className="roadmap-footer">
+        <h2>Use JobTrackr + this roadmap together</h2>
         <p>
-          Keep applying, keep tracking, and keep learning from every test and interview.
-          Consistency matters more than perfection.
+          Keep logging your applications, interviews and follow–ups. Progress
+          may look slow day to day, but over months it becomes a clear path
+          from student to professional.
         </p>
-      </section>
+      </footer>
     </main>
   );
 };
