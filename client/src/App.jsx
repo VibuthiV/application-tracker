@@ -8,6 +8,7 @@ import Navbar from "./components/Navbar.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import BoardPage from "./pages/BoardPage.jsx";
 import RoadmapPage from "./pages/RoadmapPage.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
 
 function App() {
   return (
@@ -52,6 +53,15 @@ function App() {
           element={
             <ProtectedRoute>
               <RoadmapPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
             </ProtectedRoute>
           }
         />

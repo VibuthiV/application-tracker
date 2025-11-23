@@ -154,7 +154,9 @@ export const runDailyNotificationCheck = async () => {
   try {
     console.log("[JobTrackr] Running daily email notification check...");
 
-    const users = await User.find({});
+    const users = await User.find({
+      $or: [{ emailNotifications: { $exists: false } }, { emailNotifications: true }],
+    });
 
     for (const user of users) {
       if (!user.email) continue;

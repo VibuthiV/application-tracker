@@ -198,6 +198,15 @@ const Navbar = () => {
                   Logout
                 </button>
               </div>
+                <Link
+                to="/profile"
+                className={`nav-link ${
+                    location.pathname === "/profile" ? "nav-link-active" : ""
+                }`}
+                >
+                Profile
+                </Link>
+
             </>
           )}
         </nav>
