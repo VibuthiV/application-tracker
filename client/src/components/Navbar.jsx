@@ -34,7 +34,9 @@ const Navbar = () => {
     <header className="navbar">
       <div className="navbar-inner">
         <div className="navbar-left" onClick={onBrandClick}>
-          <span className="brand-logo">💼</span>
+          <span className="brand-logo">
+            <span className="brand-logo-mark">JT</span>
+          </span>
           <span className="brand-name">JobTrackr</span>
         </div>
 
@@ -189,7 +191,7 @@ const Navbar = () => {
                 )}
               </div>
 
-              {/* User / logout */}
+              {/* User / logout + profile */}
               <div className="nav-user">
                 <span className="nav-user-name">
                   {user?.name ? `Hi, ${user.name}` : "Account"}
@@ -197,16 +199,15 @@ const Navbar = () => {
                 <button className="btn-outline" onClick={handleLogout}>
                   Logout
                 </button>
-              </div>
                 <Link
-                to="/profile"
-                className={`nav-link ${
+                  to="/profile"
+                  className={`nav-link ${
                     location.pathname === "/profile" ? "nav-link-active" : ""
-                }`}
+                  }`}
                 >
-                Profile
+                  Profile
                 </Link>
-
+              </div>
             </>
           )}
         </nav>

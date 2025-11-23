@@ -34,6 +34,7 @@ const HomePage = () => {
         setSummary(data);
       } catch (err) {
         console.error("Dashboard load error:", err);
+        setSummary(null);
       } finally {
         setLoading(false);
       }
@@ -44,12 +45,30 @@ const HomePage = () => {
 
   if (loading) {
     return (
-      <main className="home-page centered-page">
+      <main className="centered-page">
         <div className="loader" />
         <p>Loading dashboard...</p>
       </main>
     );
   }
+
+  // If something went wrong and summary is null
+  if (!summary) {
+    return (
+      <main className="home-page">
+        <h1 className="home-title">Welcome, {user?.name || "there"} 👋</h1>
+        <p className="home-subtitle">
+          We couldn&apos;t load your dashboard right now. Please try refreshing
+          the page or visit the Applications page directly.
+        </p>
+      </main>
+    );
+  }
+
+  const total = summary.total ?? 0;
+  const byStatus = summary.byStatus || {};
+  const recent = summary.recent || [];
+  const upcoming = summary.upcoming || [];
 
   return (
     <main className="home-page">
@@ -60,23 +79,23 @@ const HomePage = () => {
       <section className="stats-grid">
         <div className="stat-card">
           <h3>Total</h3>
-          <p className="stat-number">{summary.total}</p>
+          <p className="stat-number">{total}</p>
         </div>
         <div className="stat-card">
           <h3>Applied</h3>
-          <p className="stat-number">{summary.byStatus.Applied}</p>
+          <p className="stat-number">{byStatus.Applied || 0}</p>
         </div>
         <div className="stat-card">
           <h3>Interview</h3>
-          <p className="stat-number">{summary.byStatus.Interview}</p>
+          <p className="stat-number">{byStatus.Interview || 0}</p>
         </div>
         <div className="stat-card">
           <h3>Offer</h3>
-          <p className="stat-number">{summary.byStatus.Offer}</p>
+          <p className="stat-number">{byStatus.Offer || 0}</p>
         </div>
         <div className="stat-card">
           <h3>Rejected</h3>
-          <p className="stat-number">{summary.byStatus.Rejected}</p>
+          <p className="stat-number">{byStatus.Rejected || 0}</p>
         </div>
       </section>
 
@@ -92,33 +111,35 @@ const HomePage = () => {
           </button>
         </div>
 
-        {summary.recent.length === 0 ? (
+        {recent.length === 0 ? (
           <p className="muted">No applications yet.</p>
         ) : (
-          <table className="home-table">
-            <thead>
-              <tr>
-                <th>Company</th>
-                <th>Position</th>
-                <th>Status</th>
-                <th>Applied</th>
-              </tr>
-            </thead>
-            <tbody>
-              {summary.recent.map((app) => (
-                <tr
-                  key={app._id}
-                  className="clickable-row"
-                  onClick={() => navigate(`/applications?edit=${app._id}`)}
-                >
-                  <td>{app.company}</td>
-                  <td>{app.position}</td>
-                  <td>{app.status}</td>
-                  <td>{app.dateApplied?.slice(0, 10) || "-"}</td>
+          <div className="home-table-wrapper">
+            <table className="home-table">
+              <thead>
+                <tr>
+                  <th>Company</th>
+                  <th>Position</th>
+                  <th>Status</th>
+                  <th>Applied</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {recent.map((app) => (
+                  <tr
+                    key={app._id}
+                    className="clickable-row"
+                    onClick={() => navigate(`/applications?edit=${app._id}`)}
+                  >
+                    <td>{app.company}</td>
+                    <td>{app.position}</td>
+                    <td>{app.status}</td>
+                    <td>{app.dateApplied?.slice(0, 10) || "-"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
 
@@ -128,11 +149,11 @@ const HomePage = () => {
           <h2>Upcoming follow-ups</h2>
         </div>
 
-        {summary.upcoming.length === 0 ? (
+        {upcoming.length === 0 ? (
           <p className="muted">No upcoming follow-ups.</p>
         ) : (
           <ul className="followup-list">
-            {summary.upcoming.map((app) => (
+            {upcoming.map((app) => (
               <li
                 key={app._id}
                 className={getFollowupClass(app.nextFollowUpDate)}
@@ -141,7 +162,7 @@ const HomePage = () => {
                 <span>
                   <strong>{app.company}</strong> – {app.position}
                 </span>
-                <span>{app.nextFollowUpDate?.slice(0, 10)}</span>
+                <span>{app.nextFollowUpDate?.slice(0, 10) || "-"}</span>
               </li>
             ))}
           </ul>
@@ -150,7 +171,7 @@ const HomePage = () => {
 
       {/* Analytics chart */}
       <section className="home-charts">
-        <DashboardCharts byStatus={summary.byStatus} />
+        <DashboardCharts byStatus={byStatus} />
       </section>
     </main>
   );

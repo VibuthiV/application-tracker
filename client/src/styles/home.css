@@ -13,6 +13,8 @@
 .home-subtitle {
   color: var(--text-muted);
   margin-bottom: 1.6rem;
+  max-width: 640px;
+  font-size: 0.98rem;
 }
 
 /* Stats */
@@ -61,14 +63,19 @@
 
 /* Table */
 
+.home-table-wrapper {
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-subtle);
+  overflow: hidden;
+  overflow-x: auto; /* better on small screens */
+}
+
 .home-table {
   width: 100%;
   border-collapse: collapse;
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow: var(--shadow-subtle);
+  font-size: 0.9rem;
 }
 
 .home-table th,

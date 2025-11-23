@@ -4,7 +4,9 @@ import { getProfile, updateProfile } from "../services/userService";
 import "../styles/profile.css";
 
 const ProfilePage = () => {
-  const { user, setUser } = useAuth?.() || { user: null, setUser: () => {} }; // in case context doesn't expose setUser yet
+  // keep your safe fallback pattern
+  const { user, setUser } = useAuth?.() || { user: null, setUser: () => {} };
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -46,7 +48,7 @@ const ProfilePage = () => {
               ? true
               : profile.emailNotifications,
         });
-        setError(""); // clear old error if any
+        setError("");
       } catch (err) {
         console.error(err);
         const msg =
@@ -60,7 +62,6 @@ const ProfilePage = () => {
 
     loadProfile();
   }, []);
-
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -87,7 +88,6 @@ const ProfilePage = () => {
 
       const updated = await updateProfile(payload);
 
-      // If AuthContext exposes setUser, update it here (optional)
       if (setUser) {
         setUser((prev) => ({ ...(prev || {}), ...updated }));
       }
@@ -96,7 +96,8 @@ const ProfilePage = () => {
     } catch (err) {
       console.error(err);
       setError(
-        err.response?.data?.message || "Failed to update profile. Please try again."
+        err.response?.data?.message ||
+          "Failed to update profile. Please try again."
       );
     } finally {
       setSaving(false);
@@ -115,11 +116,12 @@ const ProfilePage = () => {
   return (
     <main className="profile-page">
       <header className="profile-header">
-        <div>
+        <div className="profile-header-text">
           <h1>Your profile</h1>
           <p>
             Keep your basic details, skills and links up to date. This doesn&apos;t
-            affect your login, but makes your JobTrackr space feel personal.
+            affect your login, but it makes your JobTrackr space feel personal
+            and ready for interviews.
           </p>
         </div>
       </header>
@@ -127,22 +129,43 @@ const ProfilePage = () => {
       <section className="profile-layout">
         {/* Left summary card */}
         <aside className="profile-summary-card">
-          <div className="profile-avatar">
-            <span>
-              {form.name
-                ? form.name.charAt(0).toUpperCase()
-                : (form.email || "?").charAt(0).toUpperCase()}
-            </span>
+          <div className="profile-avatar-ring">
+            <div className="profile-avatar">
+              <span>
+                {form.name
+                  ? form.name.charAt(0).toUpperCase()
+                  : (form.email || "?").charAt(0).toUpperCase()}
+              </span>
+            </div>
           </div>
-          <h2>{form.name || "Your name"}</h2>
+          <h2 className="profile-name-main">
+            {form.name || user?.name || "Your name"}
+          </h2>
           <p className="profile-email">{form.email}</p>
-          {form.headline && <p className="profile-headline">{form.headline}</p>}
+          {form.headline && (
+            <p className="profile-headline">{form.headline}</p>
+          )}
 
           <div className="profile-summary-detail">
             {form.education && <p>{form.education}</p>}
             {form.graduationYear && <p>Batch: {form.graduationYear}</p>}
             {form.location && <p>{form.location}</p>}
           </div>
+
+          {form.skills && (
+            <div className="profile-skills-chipset">
+              {form.skills
+                .split(",")
+                .map((s) => s.trim())
+                .filter(Boolean)
+                .slice(0, 6)
+                .map((skill) => (
+                  <span key={skill} className="skill-chip">
+                    {skill}
+                  </span>
+                ))}
+            </div>
+          )}
 
           <div className="profile-links">
             {form.linkedin && (
@@ -163,8 +186,14 @@ const ProfilePage = () => {
           </div>
 
           <div className="profile-settings-mini">
-            <span className="settings-label">Email reminders:</span>
-            <span className={form.emailNotifications ? "settings-pill on" : "settings-pill off"}>
+            <span className="settings-label">Email reminders</span>
+            <span
+              className={
+                form.emailNotifications
+                  ? "settings-pill on"
+                  : "settings-pill off"
+              }
+            >
               {form.emailNotifications ? "On" : "Off"}
             </span>
           </div>
@@ -176,147 +205,176 @@ const ProfilePage = () => {
             {error && <div className="profile-error">{error}</div>}
             {success && <div className="profile-success">{success}</div>}
 
-            <div className="profile-form-row">
-              <div className="profile-field">
-                <label htmlFor="name">Name</label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  value={form.name}
-                  onChange={handleChange}
-                  placeholder="Your full name"
-                />
-              </div>
-              <div className="profile-field">
-                <label htmlFor="email">Email</label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={form.email}
-                  disabled
-                />
-                <span className="field-hint">Email is used for login and notifications.</span>
-              </div>
-            </div>
+            {/* Section: Basic info */}
+            <div className="profile-section">
+              <h2 className="profile-section-title">Basic information</h2>
+              <p className="profile-section-subtitle">
+                This helps personalize your dashboard and summary cards.
+              </p>
 
-            <div className="profile-form-row">
-              <div className="profile-field">
-                <label htmlFor="headline">Headline</label>
-                <input
-                  id="headline"
-                  name="headline"
-                  type="text"
-                  value={form.headline}
-                  onChange={handleChange}
-                  placeholder="e.g. Final-year CSE student | Interested in Full Stack"
-                />
-              </div>
-            </div>
-
-            <div className="profile-form-row">
-              <div className="profile-field">
-                <label htmlFor="education">Education</label>
-                <input
-                  id="education"
-                  name="education"
-                  type="text"
-                  value={form.education}
-                  onChange={handleChange}
-                  placeholder="e.g. B.E. CSE, XYZ College"
-                />
-              </div>
-              <div className="profile-field">
-                <label htmlFor="graduationYear">Graduation year</label>
-                <input
-                  id="graduationYear"
-                  name="graduationYear"
-                  type="text"
-                  value={form.graduationYear}
-                  onChange={handleChange}
-                  placeholder="e.g. 2025"
-                />
-              </div>
-              <div className="profile-field">
-                <label htmlFor="location">Location</label>
-                <input
-                  id="location"
-                  name="location"
-                  type="text"
-                  value={form.location}
-                  onChange={handleChange}
-                  placeholder="City / Country"
-                />
-              </div>
-            </div>
-
-            <div className="profile-form-row">
-              <div className="profile-field">
-                <label htmlFor="skills">Skills (comma separated)</label>
-                <input
-                  id="skills"
-                  name="skills"
-                  type="text"
-                  value={form.skills}
-                  onChange={handleChange}
-                  placeholder="JavaScript, React, Node.js, DBMS..."
-                />
-              </div>
-            </div>
-
-            <div className="profile-form-row">
-              <div className="profile-field">
-                <label htmlFor="linkedin">LinkedIn</label>
-                <input
-                  id="linkedin"
-                  name="linkedin"
-                  type="url"
-                  value={form.linkedin}
-                  onChange={handleChange}
-                  placeholder="https://linkedin.com/in/..."
-                />
-              </div>
-              <div className="profile-field">
-                <label htmlFor="github">GitHub</label>
-                <input
-                  id="github"
-                  name="github"
-                  type="url"
-                  value={form.github}
-                  onChange={handleChange}
-                  placeholder="https://github.com/username"
-                />
-              </div>
-              <div className="profile-field">
-                <label htmlFor="portfolio">Portfolio</label>
-                <input
-                  id="portfolio"
-                  name="portfolio"
-                  type="url"
-                  value={form.portfolio}
-                  onChange={handleChange}
-                  placeholder="https://your-portfolio.com"
-                />
-              </div>
-            </div>
-
-            <div className="profile-settings-block">
-              <h3>Settings</h3>
-              <label className="toggle-row">
-                <span>
-                  Email notifications
-                  <span className="toggle-sub">
-                    Use your follow-up dates to send gentle reminder emails.
+              <div className="profile-form-row">
+                <div className="profile-field">
+                  <label htmlFor="name">Name</label>
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    value={form.name}
+                    onChange={handleChange}
+                    placeholder="Your full name"
+                  />
+                </div>
+                <div className="profile-field">
+                  <label htmlFor="email">Email</label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={form.email}
+                    disabled
+                  />
+                  <span className="field-hint">
+                    Email is used for login and notifications.
                   </span>
-                </span>
-                <input
-                  type="checkbox"
-                  name="emailNotifications"
-                  checked={form.emailNotifications}
-                  onChange={handleChange}
-                />
-              </label>
+                </div>
+              </div>
+
+              <div className="profile-form-row single">
+                <div className="profile-field">
+                  <label htmlFor="headline">Headline</label>
+                  <input
+                    id="headline"
+                    name="headline"
+                    type="text"
+                    value={form.headline}
+                    onChange={handleChange}
+                    placeholder="e.g. Final-year CSE student | Interested in Full Stack"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Section: Education & location */}
+            <div className="profile-section">
+              <h2 className="profile-section-title">Education & location</h2>
+
+              <div className="profile-form-row">
+                <div className="profile-field">
+                  <label htmlFor="education">Education</label>
+                  <input
+                    id="education"
+                    name="education"
+                    type="text"
+                    value={form.education}
+                    onChange={handleChange}
+                    placeholder="e.g. B.E. CSE, XYZ College"
+                  />
+                </div>
+                <div className="profile-field">
+                  <label htmlFor="graduationYear">Graduation year</label>
+                  <input
+                    id="graduationYear"
+                    name="graduationYear"
+                    type="text"
+                    value={form.graduationYear}
+                    onChange={handleChange}
+                    placeholder="e.g. 2025"
+                  />
+                </div>
+                <div className="profile-field">
+                  <label htmlFor="location">Location</label>
+                  <input
+                    id="location"
+                    name="location"
+                    type="text"
+                    value={form.location}
+                    onChange={handleChange}
+                    placeholder="City / Country"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Section: Skills & links */}
+            <div className="profile-section">
+              <h2 className="profile-section-title">Skills & links</h2>
+
+              <div className="profile-form-row single">
+                <div className="profile-field">
+                  <label htmlFor="skills">Skills (comma separated)</label>
+                  <input
+                    id="skills"
+                    name="skills"
+                    type="text"
+                    value={form.skills}
+                    onChange={handleChange}
+                    placeholder="JavaScript, React, Node.js, DBMS..."
+                  />
+                </div>
+              </div>
+
+              <div className="profile-form-row">
+                <div className="profile-field">
+                  <label htmlFor="linkedin">LinkedIn</label>
+                  <input
+                    id="linkedin"
+                    name="linkedin"
+                    type="url"
+                    value={form.linkedin}
+                    onChange={handleChange}
+                    placeholder="https://linkedin.com/in/..."
+                  />
+                </div>
+                <div className="profile-field">
+                  <label htmlFor="github">GitHub</label>
+                  <input
+                    id="github"
+                    name="github"
+                    type="url"
+                    value={form.github}
+                    onChange={handleChange}
+                    placeholder="https://github.com/username"
+                  />
+                </div>
+                <div className="profile-field">
+                  <label htmlFor="portfolio">Portfolio</label>
+                  <input
+                    id="portfolio"
+                    name="portfolio"
+                    type="url"
+                    value={form.portfolio}
+                    onChange={handleChange}
+                    placeholder="https://your-portfolio.com"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Section: Settings */}
+            <div className="profile-section">
+              <h2 className="profile-section-title">Preferences</h2>
+
+              <div className="profile-settings-block">
+                <label className="toggle-row">
+                  <span>
+                    Email notifications
+                    <span className="toggle-sub">
+                      Use your follow-up dates to receive gentle reminder
+                      emails.
+                    </span>
+                  </span>
+
+                  <label className="toggle-switch">
+                    <input
+                      type="checkbox"
+                      name="emailNotifications"
+                      checked={form.emailNotifications}
+                      onChange={handleChange}
+                    />
+                    <span className="toggle-slider" />
+                  </label>
+                </label>
+              </div>
             </div>
 
             <div className="profile-actions">
