@@ -7,6 +7,7 @@ import HomePage from "./pages/HomePage.jsx";
 import Navbar from "./components/Navbar.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import BoardPage from "./pages/BoardPage.jsx";
+import RoadmapPage from "./pages/RoadmapPage.jsx";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/roadmap" element={<RoadmapPage />} />
 
         {/* Protected route */}
         <Route
