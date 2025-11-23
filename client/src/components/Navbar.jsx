@@ -57,26 +57,46 @@ const Navbar = () => {
             </>
           )}
 
-          {isAuthenticated && (
+            {isAuthenticated && (
             <>
-              <Link
+                <Link
                 to="/home"
                 className={`nav-link ${
-                  location.pathname === "/home" ? "nav-link-active" : ""
+                    location.pathname === "/home" ? "nav-link-active" : ""
                 }`}
-              >
+                >
                 Home
-              </Link>
-              <div className="nav-user">
+                </Link>
+
+                <Link
+                to="/applications"
+                className={`nav-link ${
+                    location.pathname === "/applications" ? "nav-link-active" : ""
+                }`}
+                >
+                Applications
+                </Link>
+
+                <Link
+                to="/board"
+                className={`nav-link ${
+                    location.pathname === "/board" ? "nav-link-active" : ""
+                }`}
+                >
+                Board
+                </Link>
+
+                <div className="nav-user">
                 <span className="nav-user-name">
-                  {user?.name ? `Hi, ${user.name}` : "Account"}
+                    {user?.name ? `Hi, ${user.name}` : "Account"}
                 </span>
                 <button className="btn-outline" onClick={handleLogout}>
-                  Logout
+                    Logout
                 </button>
-              </div>
+                </div>
             </>
-          )}
+            )}
+
         </nav>
       </div>
     </header>
