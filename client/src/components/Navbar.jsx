@@ -102,6 +102,13 @@ const Navbar = () => {
               </Link>
 
               <Link
+                to="/calendar"
+                className={`nav-link ${location.pathname === "/calendar" ? "nav-link-active" : ""}`}
+              >
+                Calendar
+              </Link>
+
+              <Link
                 to="/roadmap"
                 className={`nav-link ${
                   location.pathname === "/roadmap" ? "nav-link-active" : ""
@@ -193,9 +200,6 @@ const Navbar = () => {
 
               {/* User / logout + profile */}
               <div className="nav-user">
-                <span className="nav-user-name">
-                  {user?.name ? `Hi, ${user.name}` : "Account"}
-                </span>
                 <button className="btn-outline" onClick={handleLogout}>
                   Logout
                 </button>

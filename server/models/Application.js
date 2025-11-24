@@ -94,7 +94,19 @@ const ApplicationSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-
+    prepNotes: {
+      type: String,
+      default: "",
+    },
+    prepChecklist: {
+      type: [
+        {
+          label: { type: String, required: true },
+          done: { type: Boolean, default: false },
+        },
+      ],
+      default: [],
+    },
     // 🌟 NEW: timeline events
     timeline: [TimelineEntrySchema],
   },

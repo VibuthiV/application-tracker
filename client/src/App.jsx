@@ -9,6 +9,7 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import BoardPage from "./pages/BoardPage.jsx";
 import RoadmapPage from "./pages/RoadmapPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import CalendarPage from "./pages/CalendarPage.jsx"
 
 function App() {
   return (
@@ -62,6 +63,15 @@ function App() {
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/calendar"
+          element={
+            <ProtectedRoute>
+              <CalendarPage />
             </ProtectedRoute>
           }
         />
