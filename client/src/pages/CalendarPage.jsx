@@ -2,15 +2,28 @@ import { useState, useEffect } from "react";
 import { fetchApplications } from "../services/applicationService";
 import "../styles/calendar.css";
 
+const pad = (n) => String(n).padStart(2, "0");
+
+// Format a Date object to local YYYY-MM-DD (no UTC conversion)
+const formatLocalDate = (d) =>
+  `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+// getFollowupState expects a local YYYY-MM-DD string
 const getFollowupState = (dateStr) => {
   if (!dateStr) return "upcoming";
+
+  // parse dateStr into a local Date
+  const [y, m, day] = dateStr.split("-").map(Number);
+  const d = new Date(y, m - 1, day);
+
   const today = new Date();
-  const d = new Date(dateStr);
+  const todayStr = formatLocalDate(today);
+  const dStr = formatLocalDate(d);
 
-  const todayStr = today.toDateString();
-  const dStr = d.toDateString();
-
-  if (d < today && dStr !== todayStr) return "overdue";
+  if (d < new Date(todayStr + "T00:00:00")) {
+    // strictly before today
+    return "overdue";
+  }
   if (dStr === todayStr) return "today";
   return "upcoming";
 };
@@ -41,7 +54,10 @@ const CalendarPage = () => {
         apps.forEach((app) => {
           if (!app.nextFollowUpDate) return;
 
-          const dateStr = app.nextFollowUpDate.slice(0, 10);
+          // Use a Date constructor on the stored date and convert to local YYYY-MM-DD
+          const d = new Date(app.nextFollowUpDate);
+          const dateStr = formatLocalDate(d);
+
           if (!map[dateStr]) map[dateStr] = [];
           map[dateStr].push(app);
 
@@ -74,7 +90,7 @@ const CalendarPage = () => {
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayStr = formatLocalDate(new Date());
 
   const changeMonth = (offset) => {
     setCurrent(new Date(year, month + offset, 1));
@@ -167,7 +183,8 @@ const CalendarPage = () => {
                 return <div key={i} className="calendar-cell empty" />;
               }
 
-              const dateStr = date.toISOString().slice(0, 10);
+              // format using local date formatting
+              const dateStr = formatLocalDate(date);
               const apps = appsByDate[dateStr] || [];
               const followState = getFollowupState(dateStr);
 
@@ -190,11 +207,8 @@ const CalendarPage = () => {
 
                   {apps.length > 0 && (
                     <div className="cell-meta">
-                      <span
-                        className={`cell-pill cell-pill-${followState}`}
-                      >
-                        {apps.length} follow-up
-                        {apps.length > 1 ? "s" : ""}
+                      <span className={`cell-pill cell-pill-${followState}`}>
+                        {apps.length} follow-up{apps.length > 1 ? "s" : ""}
                       </span>
                       {firstApp && (
                         <span className="cell-preview">
@@ -240,15 +254,14 @@ const CalendarPage = () => {
             <ul className="calendar-app-list">
               {selectedApps.map((app) => {
                 const state = getFollowupState(
-                  app.nextFollowUpDate?.slice(0, 10)
+                  // normalize stored date into local YYYY-MM-DD
+                  app.nextFollowUpDate ? formatLocalDate(new Date(app.nextFollowUpDate)) : null
                 );
                 return (
                   <li key={app._id} className="calendar-app-item">
                     <div className="calendar-app-main">
                       <strong>{app.company}</strong>
-                      <span className="calendar-app-position">
-                        {app.position}
-                      </span>
+                      <span className="calendar-app-position">{app.position}</span>
                     </div>
                     <div className="calendar-app-meta">
                       <span className="calendar-app-status">

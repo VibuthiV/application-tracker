@@ -292,8 +292,8 @@ const ApplicationsPage = () => {
               Logged in as <span>{user.email}</span>
             </p>
           )}
+          <h3>Select any application to open Activity Timeline</h3>
         </div>
-
         <div className="applications-header-actions">
           <form className="applications-search" onSubmit={handleSearchSubmit}>
             <input
